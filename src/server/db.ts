@@ -27,9 +27,13 @@ export async function ensureSchema(): Promise<void> {
   if (!ready) {
     ready = (async () => {
       const c = db();
-      await c.execute("PRAGMA foreign_keys = ON");
-      await c.execute("PRAGMA journal_mode = WAL");
-      await c.execute("PRAGMA busy_timeout = 10000");
+      if (dbUrl().startsWith("file:")) {
+        await c.execute("PRAGMA foreign_keys = ON");
+        await c.execute("PRAGMA journal_mode = WAL");
+        await c.execute("PRAGMA busy_timeout = 10000");
+      } else {
+        await c.execute("PRAGMA foreign_keys = ON").catch(() => {});
+      }
       await c.executeMultiple(SCHEMA);
     })();
     ready.catch(() => { ready = null; });

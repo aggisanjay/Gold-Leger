@@ -97,18 +97,23 @@ const purityText = (bp: number) => `${Math.floor(bp / 100)}.${String(bp % 100).p
 const grossForFine = (fine: number, purityBp: number) => Math.max(1, Math.round((fine * 10000) / purityBp));
 
 async function main() {
-  const rawDb = (await import("../src/server/db")).db();
-  await rawDb.execute("PRAGMA busy_timeout = 10000");
-  await rawDb.execute("PRAGMA journal_mode = WAL");
-  await rawDb.execute("PRAGMA synchronous = OFF");
+  const dbModule = await import("../src/server/db");
+  const rawDb = dbModule.db();
+  const isLocal = dbModule.dbUrl().startsWith("file:");
+
+  if (isLocal) {
+    await rawDb.execute("PRAGMA busy_timeout = 10000");
+    await rawDb.execute("PRAGMA journal_mode = WAL");
+    await rawDb.execute("PRAGMA synchronous = OFF");
+  }
 
   if (process.argv.includes("--reset")) {
     const tables = await rawDb.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");
-    await rawDb.execute("PRAGMA foreign_keys = OFF");
+    if (isLocal) await rawDb.execute("PRAGMA foreign_keys = OFF");
     for (const t of tables.rows) {
       await rawDb.execute(`DROP TABLE IF EXISTS "${t.name}"`);
     }
-    await rawDb.execute("PRAGMA foreign_keys = ON");
+    if (isLocal) await rawDb.execute("PRAGMA foreign_keys = ON");
     console.log("Reset existing database tables.");
   }
 
@@ -327,7 +332,9 @@ async function main() {
   });
 
   // ── checks
-  await rawDb.execute("PRAGMA synchronous = NORMAL");
+  if (isLocal) {
+    await rawDb.execute("PRAGMA synchronous = NORMAL");
+  }
   const sum = await one<{ s: number }>(c, "SELECT COALESCE(SUM(fine_mg),0) AS s FROM ledger_lines");
   if (sum!.s !== 0) throw new Error(`Ledger does not balance: ${sum!.s}`);
   const counts = await one<Record<string, number>>(c, `SELECT (SELECT COUNT(*) FROM karigars) AS karigars, (SELECT COUNT(*) FROM jobs) AS jobs, (SELECT COUNT(*) FROM jobs WHERE status='OPEN') AS open_jobs,
