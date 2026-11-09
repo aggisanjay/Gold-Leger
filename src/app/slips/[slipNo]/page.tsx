@@ -12,7 +12,7 @@ export const metadata = { title: "Slip" };
 
 function formatVerification(v: string | null): string {
   if (!v) return "no photo";
-  const hasMatched = v.includes("MATCHED");
+  const hasMatched = v.includes("MATCH");
   const hasEye = v.includes("CONFIRMED_BY_EYE");
   if (hasMatched) return "photo matched";
   if (hasEye) return "checked by eye";
@@ -179,8 +179,14 @@ export default async function SlipPage(props: {
             <span className="ml-2">&bull; {fmtTime(slip.createdAt)}</span>
           </div>
           <div>
-            <span className="inline-flex items-center gap-1 font-medium px-2 py-0.5 rounded bg-paper border border-line text-ink-2 capitalize">
-              {summaryVerification}
+            <span className={`inline-flex items-center gap-1 font-medium px-2.5 py-0.5 rounded text-[11.5px] border ${
+              summaryVerification === "photo matched"
+                ? "bg-ok-soft text-ok border-ok/30"
+                : summaryVerification === "checked by eye"
+                ? "bg-review-soft text-review border-review/30"
+                : "bg-paper text-mute border-line"
+            }`}>
+              {summaryVerification === "photo matched" ? "✓ Photo Matched" : summaryVerification === "checked by eye" ? "Checked by Eye" : "No Photo"}
             </span>
           </div>
         </div>
