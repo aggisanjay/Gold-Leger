@@ -1,9 +1,8 @@
 node_modules
 .next
-.env
-.env.*
 !.env.example
 data/*.db
 data/*.db-*
 *.tsbuildinfo
 coverage
+config.bat
