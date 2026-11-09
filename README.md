@@ -1,5 +1,7 @@
 # Gold Ledger — Jewellery Bullion Accounting & Inventory Platform
 
+> **Live Deployed App:** [https://goldleger.vercel.app](https://goldleger.vercel.app/)  
+> **GitHub Repository:** [https://github.com/aggisanjay/Gold-Leger](https://github.com/aggisanjay/Gold-Leger)  
 > **Client:** Company A, Coimbatore (5 Showrooms, Sullivan Street Workshop, ~40 Karigars, ₹220–₹260 Cr Revenue)  
 > **Objective:** Reduce unexplained gold loss from 0.4% (₹1.2 Cr/yr) to under 0.15% (< ₹45 Lakhs), and cut month-end reconciliation from 3 days to half a day (0.5 day).
 

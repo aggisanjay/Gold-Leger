@@ -1,9 +1,10 @@
 # Gold Ledger — Technical Design Document
 
-**Repository:** `https://github.com/company-a/gold-ledger`  
+**GitHub Repository:** `https://github.com/aggisanjay/Gold-Leger`  
+**Live Deployed Application:** `https://goldleger.vercel.app/`  
 **Client:** Company A, Coimbatore (5 Showrooms, Sullivan Street Workshop, ~40 Karigars, ₹220–₹260 Cr Annual Revenue)  
 **Author:** Software Engineering Team  
-**Status:** Production-Ready Build  
+**Status:** Production Deployed & Verified  
 
 ---
 

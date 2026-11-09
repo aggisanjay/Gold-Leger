@@ -1,7 +1,9 @@
 # Gold Ledger — Deployment & Operations Guide
 
-> **Client:** Company A, Coimbatore (5 Showrooms, Sullivan Street Workshop, ~40 Karigars)  
-> **App:** Gold Ledger (zero-float integer milligram ledger, local & cloud SQLite/Turso, AI scale/printout OCR, Tamil mobile portal)
+**Live Deployed Application:** [https://goldleger.vercel.app](https://goldleger.vercel.app/)  
+**GitHub Repository:** [https://github.com/aggisanjay/Gold-Leger](https://github.com/aggisanjay/Gold-Leger)  
+**Client:** Company A, Coimbatore (5 Showrooms, Sullivan Street Workshop, ~40 Karigars)  
+**App:** Gold Ledger (zero-float integer milligram ledger, local & cloud SQLite/Turso, AI scale/printout OCR, Tamil mobile portal)
 
 ---
 
