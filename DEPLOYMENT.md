@@ -1,106 +1,85 @@
-# GoldTrack ERP — Deployment & Operational Guide
+# Gold Ledger — Deployment & Operations Guide
 
-## 1. Overview
-GoldTrack ERP is a production-quality jewellery bullion inventory and gold-accounting platform built with **Next.js (latest version)**, **Tailwind CSS**, **Prisma ORM**, and **Neon PostgreSQL**.
-
-It provides centralized, high-precision bullion tracking across **5 Showrooms**, **1 Central Vault (Zaveri Bazaar)**, **1 Master Workshop (SEEPZ)**, **1 Refinery Transit Hub**, and **40+ Karigars**.
+> **Client:** Company A, Coimbatore (5 Showrooms, Sullivan Street Workshop, ~40 Karigars)  
+> **App:** Gold Ledger (zero-float integer milligram ledger, local & cloud SQLite/Turso, AI scale/printout OCR, Tamil mobile portal)
 
 ---
 
-## 2. Environment Variables Configuration
+## 1. Quick Start (Local Development)
 
-Copy `.env.example` to `.env`:
-
-```env
-# Neon PostgreSQL Connection String
-# Get this from your Neon Console (https://console.neon.tech)
-DATABASE_URL="postgresql://[user]:[password]@[endpoint].neon.tech/[dbname]?sslmode=require"
-
-# JWT Secret for Session Signing
-JWT_SECRET="goldtrack-erp-super-secret-jwt-key-2026-luxury-bullion"
-
-# Application Environment
-NODE_ENV="development"
-NEXT_PUBLIC_APP_NAME="GoldTrack ERP"
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
-```
-
----
-
-## 3. Local Installation & Development
-
-### Step 1: Install Dependencies
 ```bash
+# 1. Install dependencies
 npm install
-```
 
-### Step 2: Run Automated Mathematical & API Calculation Tests
-```bash
+# 2. Initialize environment (.env.local with a fresh random SESSION_SECRET)
+npm run setup
+
+# 3. Create and seed local SQLite database with 120 days of history & the brief's sample rows
+npm run reset
+
+# 4. Start local development server on port 3000
+npm run dev
+
+# 5. Run test suite (Vitest: domain maths, flows, and API route guards)
 npm test
 ```
-*Validates fine-gold calculations, agreed wastage ceilings, excess wastage alert generation, and old-gold valuations.*
 
-### Step 3: Neon Database Setup & Migrations
-Once your `DATABASE_URL` is configured with your Neon PostgreSQL connection string:
-```bash
-# Push Prisma schema to Neon Database
-npx prisma db push
-
-# Seed realistic demonstration dataset
-node prisma/seed.js
-```
-
-### Step 4: Run Development Server
-```bash
-npm run dev
-```
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 4. Production Build & Deployment
+## 2. Demo Sign-in Credentials
 
-To build an optimized production bundle:
+| Persona | Role | Identifier / Username | Password / PIN | Scope |
+|---|---|---|---|---|
+| **Issue Clerk** | `CLERK` | `clerk` | `Demo@2026` | Workshop issues & receipts, scale verification |
+| **Finance Head** | `FINANCE` | `finance` | `Demo@2026` | Vault bullion, refiner batches, rate setting, full stock statement, alerts |
+| **Managing Partner** | `PARTNER` | `partner` | `Demo@2026` | Read-only executive oversight, stock statement & loss trend |
+| **Artisan (Murugesan S)** | `KARIGAR` | `9000000001` | `123456` | Mobile phone portal (`/me`), Tamil slips & running fine-gold balance |
+
+---
+
+## 3. Production Deployment (Vercel / Render + Turso)
+
+Gold Ledger runs as a standard Next.js 15 App Router application.
+
+### Database: Turso (libSQL)
+Create a managed database on [Turso](https://turso.tech/):
 ```bash
-npm run build
-npm start
+turso db create goldledger
+turso db tokens create goldledger
+```
+
+### Environment Variables
+Configure the following environment variables in your deployment dashboard (e.g. Vercel Project Settings or Render Environment):
+
+| Variable Name | Required | Description |
+|---|:---:|---|
+| `SESSION_SECRET` | **Yes** | 64-character random hex string for signing JWT session cookies. Generated via `npm run setup`. Has no hardcoded fallback. |
+| `DATABASE_URL` | **Yes** | Database connection string. In production: `libsql://your-db-org.turso.io`. (Locally: `file:data/goldledger.db`). |
+| `DATABASE_AUTH_TOKEN` | In Cloud | Auth token provided by Turso (`turso db tokens create ...`). Not needed for local file databases. |
+| `DEMO_MODE` | Optional | Set to `1` or `true` to display pre-filled demo login buttons on the login screen. |
+| `GEMINI_API_KEY` | Optional | Google Gemini API key for multimodal secondary reading of scale LCDs and karat printouts. |
+| `INSECURE_COOKIES` | Optional | Set to `1` only if testing over plain HTTP without TLS (disables `Secure` cookie attribute). Never set in production. |
+
+---
+
+## 4. Database Seeding in Production
+
+To seed your production Turso database with categories, staff users, initial vault bullion, and karigars:
+```bash
+DATABASE_URL="libsql://your-db-org.turso.io" DATABASE_AUTH_TOKEN="your-token" npm run seed
 ```
 
 ---
 
-## 5. Demonstration Accounts & Personas
+## 5. Verification Checklist
 
-GoldTrack ERP includes built-in 1-click persona switching located in the top navigation bar and on `/login`:
-
-| Role | Name | Email | Password | Scope |
-|---|---|---|---|---|
-| **Proprietor / Super Admin** | Rajeshwar Zaveri | `owner@goldtrack.com` | `GoldTrack@2026` | Consolidated (All Showrooms, Vault, Workshop) |
-| **Branch Manager** | Vikramaditya Rathore | `branch.mgr@goldtrack.com` | `GoldTrack@2026` | Flagship Showroom — Colaba |
-| **Inventory Manager** | Suresh Chandra Parekh | `inventory.mgr@goldtrack.com` | `GoldTrack@2026` | Zaveri Bazaar Central Strongroom Safe |
-| **Chartered Accountant** | Kavita Shah, CA | `accountant@goldtrack.com` | `GoldTrack@2026` | Audit, Reconciliation & Tally Exports |
-| **Master Artisan (Karigar)** | Ramesh Baburao Soni | `karigar.ramesh@goldtrack.com` | `GoldTrack@2026` | SEEPZ Bay A & Mobile Karigar Portal |
-| **Appraisal Officer** | Nilesh Varma | `oldgold.staff@goldtrack.com` | `GoldTrack@2026` | Old-Gold Purchase & Exchange Desk |
-
----
-
-## 6. Business Accounting & Mathematical Rules
-
-1. **Fine Gold Calculation**:
-   $$\text{Fine Gold} = \frac{\text{Gross Weight} \times \text{Purity Percentage}}{100}$$
-   Calculated with 3 decimal places (0.001g milligram precision) using `decimal.js`.
-
-2. **Total Recovered Fine Gold**:
-   $$\text{Recovered Fine} = \text{Finished Jewellery Fine} + \text{Scrap Fine} + \text{Filings Fine}$$
-
-3. **Wastage & Loss Audit**:
-   - $\text{Actual Wastage} = \text{Issued Fine} - \text{Total Recovered Fine}$
-   - $\text{Allowed Wastage} = \frac{\text{Issued Fine} \times \text{Agreed Karigar Category \%}}{100}$
-   - $\text{Excess Wastage} = \max(0, \text{Actual Wastage} - \text{Allowed Wastage})$
-
-   *When Excess Wastage > 0, the system automatically creates a `WastageAlert` requiring formal investigation and sign-off.*
-
-4. **Old-Gold Valuation**:
-   - $\text{Net Eligible Weight} = \text{Gross Weight} - \text{Approved Stone/Enamel Deduction}$
-   - $\text{Fine Gold Equivalent} = \frac{\text{Net Eligible Weight} \times \text{Tested Purity \%}}{100}$
-   - $\text{Exchange Value} = \text{Fine Gold Equivalent} \times \text{Gold Rate per Gram}$
-
+1. **Exact Sample Data:** Verify Murugesan S sample rows:
+   - `TX-30411`: Issue 120.000g @ 91.60% &rarr; 109.920g Fine Balance
+   - `TX-30437`: Receipt Necklace 112.450g @ 91.60% &rarr; 103.004g Fine, Balance 6.916g
+   - `TX-30438`: Receipt Scrap 3.300g @ 91.60% &rarr; 3.023g Fine, Balance 3.893g
+2. **AI Scale / Karat Meter OCR:** Upload scale display; verify that typing a mismatched weight blocks submission.
+3. **Daily Stock Statement:** Accessible only to Finance and Partner; download CSV and Tally XML; print preview formatted for A4.
+4. **Mobile Karigar Portal (`/me`):** Sign in with `9000000001` / `123456`; verify large fine-gold balance, Tamil labels, and recent slips at 360px width.
+5. **Offline Outbox:** Turn off network; submit issue or receipt; entry is safely queued in IndexedDB and flushes when network restores.

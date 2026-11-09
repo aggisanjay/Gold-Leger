@@ -1,25 +1,8 @@
-import { NextResponse } from "next/server";
-import { GoldTrackService } from "@/lib/data-service";
-import { getSession } from "@/lib/auth";
+import { api, body } from "@/server/api";
+import { oldGoldSchema } from "@/server/schemas";
+import { recordOldGold } from "@/server/services/oldgold";
 
-export async function GET() {
-  const records = await GoldTrackService.getOldGoldPurchases();
-  return NextResponse.json(records);
-}
-
-export async function POST(request: Request) {
-  try {
-    const session = await getSession();
-    const body = await request.json();
-
-    const purchase = await GoldTrackService.createOldGoldPurchase({
-      ...body,
-      staffId: session?.id || "u-05",
-    });
-
-    return NextResponse.json(purchase, { status: 201 });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 400 });
-  }
-}
-
+export const POST = api(["CLERK", "FINANCE"], async ({ req, ctx }) => {
+  const i = await body(req, oldGoldSchema);
+  return recordOldGold(ctx, { ...i, grossMg: i.gross, deductionMg: i.deduction, purityBp: i.purity });
+});

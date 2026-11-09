@@ -1,43 +1,26 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import "@fontsource-variable/hanken-grotesk";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
+import "@fontsource/ibm-plex-mono/600.css";
+import "@fontsource-variable/noto-sans-tamil";
 import "./globals.css";
-import { AppProvider } from "@/components/AppContext";
-import { Sidebar } from "@/components/Sidebar";
-import { TopNav } from "@/components/TopNav";
-import { OfflineSyncBanner } from "@/components/OfflineSyncBanner";
+import { PwaRegister } from "@/components/pwa-register";
 
 export const metadata: Metadata = {
-  title: "GoldTrack ERP — Company A, Coimbatore Bullion Ledger",
-  description: "Enterprise bullion inventory and gold-accounting platform for luxury jewellery chains.",
+  title: { default: "Gold Ledger", template: "%s · Gold Ledger" },
+  description: "Every gram issued to the workshop, accounted for.",
+  manifest: "/manifest.webmanifest",
+  icons: { icon: "/icon-192.png", apple: "/icon-192.png" },
 };
+export const viewport: Viewport = { themeColor: "#ffffff", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="bg-[#FDFBF7] text-[#1C1917] min-h-screen antialiased flex flex-col">
-        <AppProvider>
-          <div className="flex min-h-screen bg-[#FDFBF7]">
-            <Sidebar />
-            <div className="flex-1 flex flex-col min-w-0 transition-all duration-300 ml-64">
-              <TopNav />
-              <main className="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto">
-                {children}
-              </main>
-            </div>
-          </div>
-          <OfflineSyncBanner />
-        </AppProvider>
+      <body>
+        {children}
+        <PwaRegister />
       </body>
     </html>
   );
