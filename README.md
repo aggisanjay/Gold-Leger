@@ -17,10 +17,10 @@ Gold Ledger is an immutable, double-entry fine-gold accounting platform built sp
 2. **Double-Entry Balance Constraint**: Every transaction consists of two balancing ledger lines whose sum is exactly zero:
    $$\sum \Delta \text{fine\_mg} = 0$$
    Gold can only move between accounts (`VAULT`, `KARIGAR:<id>`, `SCRAP`, `FILINGS`, `REFINER`, `ALLOWANCE`, `LOSS`, `SUPPLIER`, `COUNTER`), never appear or vanish silently.
-3. **Multi-Engine Vision OCR**: Reads scale weights and karat-meter purity printouts locally using an algorithmic 7-segment heuristic and Tesseract, with optional Gemini AI fallback. Clerks review photo and extracted values side-by-side; any unconfirmed mismatch blocks saving.
-4. **Statistical Loss-Drift Detection**: Tracks karigar rolling wastage against their own personal historical mean and standard deviation (Z-score), raising non-accusatory review advisories for the Finance Head and Managing Partner before month-end.
-5. **Power & Network Cut Resilience**: Coimbatore workshops face frequent outages. Gold Ledger operates offline via service workers, queues entries in IndexedDB, and synchronizes deterministically using client-generated UUID idempotency keys.
-6. **Bilingual Karigar Mobile Portal**: Dedicated Tamil interface (`/me`) designed for 360px workshop smartphones with large, prominent balance displays and dual-language slips.
+4. **Multi-Engine Vision OCR**: Reads scale weights and karat-meter purity printouts locally using an algorithmic 7-segment heuristic and Tesseract, with optional Gemini AI fallback. Clerks review photo and extracted values side-by-side; any unconfirmed mismatch blocks saving.
+5. **Statistical Loss-Drift Detection**: Tracks karigar rolling wastage against their own personal historical mean and standard deviation (Z-score), raising non-accusatory review advisories for the Finance Head and Managing Partner before month-end.
+6. **Power & Network Cut Resilience**: Coimbatore workshops face frequent outages. Gold Ledger operates offline via service workers, queues entries in IndexedDB, and synchronizes deterministically using client-generated UUID idempotency keys.
+7. **Bilingual Karigar Mobile Portal**: Dedicated Tamil interface (`/me`) designed for 360px workshop smartphones with large, prominent balance displays and dual-language slips.
 
 ---
 
