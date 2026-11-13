@@ -15,7 +15,7 @@ Gold Ledger is an immutable, double-entry fine-gold accounting platform built sp
 
 1. **Zero-Float Integer Ledger**: All weights are stored and calculated in integer milligrams (`Mg`), purity in integer basis points (`Bp`, where $91.60\% = 9160$), and currency in integer paise. No floating-point inaccuracies or IEEE 754 rounding drift can ever occur.
 2. **Double-Entry Balance Constraint**: Every transaction consists of two balancing ledger lines whose sum is exactly zero:
-   $$\sum \Delta \text{fine\_mg} = 0$$
+   $$\sum \Delta \text{fine\mg} = 0$$
    Gold can only move between accounts (`VAULT`, `KARIGAR:<id>`, `SCRAP`, `FILINGS`, `REFINER`, `ALLOWANCE`, `LOSS`, `SUPPLIER`, `COUNTER`), never appear or vanish silently.
 4. **Multi-Engine Vision OCR**: Reads scale weights and karat-meter purity printouts locally using an algorithmic 7-segment heuristic and Tesseract, with optional Gemini AI fallback. Clerks review photo and extracted values side-by-side; any unconfirmed mismatch blocks saving.
 5. **Statistical Loss-Drift Detection**: Tracks karigar rolling wastage against their own personal historical mean and standard deviation (Z-score), raising non-accusatory review advisories for the Finance Head and Managing Partner before month-end.
